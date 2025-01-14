@@ -1,13 +1,16 @@
 {
-    "compilerOptions": {
-      "target": "ES6",
-      "module": "commonjs",
-      "outDir": "./dist",
-      "rootDir": "./src",
-      "esModuleInterop": true,
-      "strict": true
-    },
-    "include": [
-      "src/**/*.ts"
-    ]
-  }
+  "compilerOptions": {
+    "target": "ES6", // ou ESNext
+    "module": "ES6", // ou ESNext
+    "moduleResolution": "node",
+    "outDir": "./dist", // pasta onde os arquivos .js gerados pelo TypeScript irão
+    "esModuleInterop": true, // garante compatibilidade entre CommonJS e ES Modules
+    "strict": true
+  },
+  "include": [
+    "src/**/*.ts" // Certifique-se de que o TypeScript está pegando os arquivos da pasta src
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

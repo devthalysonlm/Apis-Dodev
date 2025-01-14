@@ -3,58 +3,96 @@ import express, { Request, Response } from 'express';
 const app = express();
 const port = 3000;
 
-//configuração do middleware para aceitar JSON
+// Configuração do middleware para aceitar JSON
 app.use(express.json());
 
-//rota inicial
+// Rota inicial
 app.get('/', (req: Request, res: Response) => {
-    res.send('bem-vindo ao gerenciador de carros!')
+  res.send('Bem-vindo ao Gerenciador de Carros!');
 });
 
-//definindo a estrutura de carro
-class Carro{
-    marca: string;
-    modelo: string;
-    categoria: string;
-    ano: number;
-    quilometragem: number;
-    valor: number;
+// Definindo a estrutura de Carro
+class Carro {
+  marca: string;
+  modelo: string;
+  categoria: string;
+  ano: number;
+  quilometragem: number;
+  valor: number;
 
-    constructor(marca:string, modelo: string, categoria: string, ano: number, quilometragem: number, valor: number){
-        this.marca = marca;
-        this.modelo = modelo
-        this.categoria = categoria
-        this.ano = ano
-        this.quilometragem = quilometragem
-        this.valor = valor
-    }
+  constructor(marca: string, modelo: string, categoria: string, ano: number, quilometragem: number, valor: number) {
+    this.marca = marca;
+    this.modelo = modelo;
+    this.categoria = categoria;
+    this.ano = ano;
+    this.quilometragem = quilometragem;
+    this.valor = valor;
+  }
 }
 
-//definir uma lista de carros(em um banco de dados ou estrutura simples para o exercício)
-
+// Lista de carros
 let carros: Carro[] = [
-    new Carro('Marca A', 'Modelo A', 'SUV', 2020, 20000, 50000),
-    new Carro('Marca B', 'Modelo B', 'Sedan', 2018, 10000, 60000)
+  new Carro('Marca A', 'Modelo A', 'SUV', 2020, 20000, 50000),
+  new Carro('Marca B', 'Modelo B', 'Sedan', 2018, 10000, 60000),
 ];
 
-
-//rota para listar todos os carros
+// Rota para listar todos os carros
 app.get('/carros', (req: Request, res: Response) => {
-    res.json(carros);
+  res.json(carros);
 });
 
-//rota para pegar um carro específico por ID
+// Rota para pegar um carro específico por ID
 app.get('/carros/:id', (req: Request, res: Response) => {
-    const id = parseInt(req.params.id);
-    const carro = carros.find((c) => c.ano === id);
-    if(!carro){
-        return res.status(404).json({mensagem: 'Carro não encontrado'});
-    }
-    res.json(carro);
+  const id = parseInt(req.params.id);
+  const carro = carros.find((c) => c.ano === id);
+  if (!carro) {
+    return res.status(404).json({ mensagem: 'Carro não encontrado' });
+  }
+  res.json(carro);
 });
 
-//rota para adicionar um carro
+// Rota para adicionar um novo carro
+app.post('/carros', (req: Request, res: Response) => {
+  const { marca, modelo, categoria, ano, quilometragem, valor } = req.body;
+  const novoCarro = new Carro(marca, modelo, categoria, ano, quilometragem, valor);
+  carros.push(novoCarro);
+  res.status(201).json(novoCarro);
+});
+
+// Rota para atualizar um carro
 app.put('/carros/:id', (req: Request, res: Response) => {
-    const id = parseInt(req.params.id);
-    
-})
+  const id = parseInt(req.params.id);
+  const { marca, modelo, categoria, ano, quilometragem, valor } = req.body;
+  const carro = carros.find((c) => c.ano === id);
+
+  if (!carro) {
+    return res.status(404).json({ mensagem: 'Carro não encontrado' });
+  }
+
+  carro.marca = marca || carro.marca;
+  carro.modelo = modelo || carro.modelo;
+  carro.categoria = categoria || carro.categoria;
+  carro.ano = ano || carro.ano;
+  carro.quilometragem = quilometragem || carro.quilometragem;
+  carro.valor = valor || carro.valor;
+
+  res.json(carro);
+});
+
+// Rota para deletar um carro
+app.delete('/carros/:id', (req: Request, res: Response) => {
+  const id = parseInt(req.params.id);
+  const index = carros.findIndex((c) => c.ano === id);
+
+  if (index === -1) {
+    return res.status(404).json({ mensagem: 'Carro não encontrado' });
+  }
+
+  carros.splice(index, 1);
+  res.status(204).send();
+});
+
+// Iniciar o servidor
+app.listen(port, () => {
+  console.log(`Servidor rodando em http://localhost:${port}`);
+});
