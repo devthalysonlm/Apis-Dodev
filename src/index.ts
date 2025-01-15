@@ -80,7 +80,7 @@ app.put('/carros/:id', (req: Request, res: Response) => {
 });
 
 // Rota para deletar um carro
-app.delete('/carros/:id', (req: Request, res: Response) => {
+app.delete('/carros/:id', (req, res) => {
   const id = parseInt(req.params.id);
   const index = carros.findIndex((c) => c.ano === id);
 
